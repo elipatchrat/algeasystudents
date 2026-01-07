@@ -5,12 +5,6 @@ const API_BASE = 'https://algeasy-backend.vercel.app/api';
 let currentUser = null;
 let token = null;
 let currentProblem = null;
-let stats = {
-    correct: 0,
-    attempted: 0,
-    streak: 0,
-    totalSolved: 0
-};
 
 // DOM Elements
 const pages = {
@@ -25,13 +19,8 @@ const pages = {
 const loggedOutView = document.getElementById('loggedOutView');
 const loggedInView = document.getElementById('loggedInView');
 const dashboardUserName = document.getElementById('dashboardUserName');
-const dashboardTotalSolved = document.getElementById('dashboardTotalSolved');
-const dashboardAccuracy = document.getElementById('dashboardAccuracy');
-const dashboardStreak = document.getElementById('dashboardStreak');
 const dashboardPracticeBtn = document.getElementById('dashboardPracticeBtn');
 const dashboardProfileBtn = document.getElementById('dashboardProfileBtn');
-const dashboardMiniAchievements = document.getElementById('dashboardMiniAchievements');
-const dashboardAchievementsText = document.getElementById('dashboardAchievementsText');
 const recentActivity = document.getElementById('recentActivity');
 
 // Navigation Elements
@@ -53,17 +42,11 @@ const problemText = document.getElementById('problemText');
 const answerInput = document.getElementById('answerInput');
 const submitAnswer = document.getElementById('submitAnswer');
 const feedback = document.getElementById('feedback');
-const correctCount = document.getElementById('correctCount');
-const attemptedCount = document.getElementById('attemptedCount');
-const streakCount = document.getElementById('streakCount');
 
 // Profile Elements
 const userName = document.getElementById('userName');
 const userEmail = document.getElementById('userEmail');
 const userGrade = document.getElementById('userGrade');
-const totalSolved = document.getElementById('totalSolved');
-const accuracyRate = document.getElementById('accuracyRate');
-const currentStreak = document.getElementById('currentStreak');
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
@@ -129,7 +112,7 @@ function setupEventListeners() {
     });
     
     document.getElementById('learnMoreBtn').addEventListener('click', () => {
-        alert('Algeasy helps Year 8-10 students master algebra through interactive practice problems, progress tracking, and achievements. Sign up to get started!');
+        alert('Algeasy helps Year 8-10 students master algebra through interactive practice problems. Sign up to get started!');
     });
     
     // Dashboard buttons
@@ -186,79 +169,14 @@ function updateDashboard() {
     // Update user info
     dashboardUserName.textContent = currentUser.name;
     
-    // Update stats
-    dashboardTotalSolved.textContent = stats.totalSolved;
-    const accuracy = stats.attempted > 0 ? Math.round((stats.correct / stats.attempted) * 100) : 0;
-    dashboardAccuracy.textContent = `${accuracy}%`;
-    dashboardStreak.textContent = stats.streak;
-    
-    // Update achievements
-    updateMiniAchievements();
-    
     // Update recent activity
     updateRecentActivity();
 }
 
-function updateMiniAchievements() {
-    dashboardMiniAchievements.innerHTML = '';
-    
-    const achievements = [
-        { icon: '🎯', name: 'First Steps', required: 10 },
-        { icon: '🌟', name: 'Rising Star', required: 50 },
-        { icon: '🏆', name: 'Algebra Master', required: 100 },
-        { icon: '🔥', name: 'On Fire', required: 10, isStreak: true }
-    ];
-    
-    achievements.forEach(achievement => {
-        const div = document.createElement('div');
-        div.className = 'mini-achievement';
-        div.title = achievement.name;
-        
-        let unlocked = false;
-        if (achievement.isStreak) {
-            unlocked = stats.streak >= achievement.required;
-        } else {
-            unlocked = stats.totalSolved >= achievement.required;
-        }
-        
-        if (unlocked) {
-            div.classList.add('unlocked');
-        }
-        
-        div.textContent = achievement.icon;
-        dashboardMiniAchievements.appendChild(div);
-    });
-    
-    // Update achievements text
-    const unlockedCount = achievements.filter(a => {
-        if (a.isStreak) return stats.streak >= a.required;
-        return stats.totalSolved >= a.required;
-    }).length;
-    
-    if (unlockedCount === 0) {
-        dashboardAchievementsText.textContent = 'Start solving problems to unlock achievements!';
-    } else if (unlockedCount < achievements.length) {
-        dashboardAchievementsText.textContent = `Great progress! ${unlockedCount}/${achievements.length} achievements unlocked.`;
-    } else {
-        dashboardAchievementsText.textContent = 'Amazing! All achievements unlocked! 🎉';
-    }
-}
 
 function updateRecentActivity() {
-    // This would normally fetch from backend, but for now show placeholder
-    if (stats.totalSolved === 0) {
-        recentActivity.innerHTML = '<p>No recent activity yet. Start practicing to see your progress!</p>';
-    } else {
-        const accuracy = stats.attempted > 0 ? Math.round((stats.correct / stats.attempted) * 100) : 0;
-        recentActivity.innerHTML = `
-            <div class="activity-item">
-                <strong>Today:</strong> Solved ${stats.totalSolved} problems with ${accuracy}% accuracy 🎯
-            </div>
-            <div class="activity-item">
-                <strong>Current Streak:</strong> ${stats.streak} problems in a row 🔥
-            </div>
-        `;
-    }
+    // Show simple welcome message
+    recentActivity.innerHTML = '<p>Welcome back! Ready to practice some algebra problems?</p>';
 }
 
 // Authentication
@@ -283,9 +201,6 @@ async function handleLogin(e) {
             token = data.token;
             localStorage.setItem('algeasyCurrentUser', JSON.stringify(currentUser));
             localStorage.setItem('algeasyToken', token);
-            
-            stats = currentUser.stats;
-            updateStatsDisplay();
             
             showPage('practice');
             generateProblem();
@@ -322,9 +237,6 @@ async function handleSignup(e) {
             localStorage.setItem('algeasyCurrentUser', JSON.stringify(currentUser));
             localStorage.setItem('algeasyToken', token);
             
-            stats = currentUser.stats;
-            updateStatsDisplay();
-            
             showPage('practice');
             generateProblem();
             signupForm.reset();
@@ -351,31 +263,6 @@ function loadUserFromStorage() {
     if (userData && tokenData) {
         currentUser = JSON.parse(userData);
         token = tokenData;
-        stats = currentUser.stats || { correct: 0, attempted: 0, streak: 0, totalSolved: 0 };
-        updateStatsDisplay();
-    }
-}
-
-async function saveUserStats() {
-    if (currentUser && token) {
-        try {
-            const response = await fetch(`${API_BASE}/user/stats`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ stats })
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                currentUser = data.user;
-                localStorage.setItem('algeasyCurrentUser', JSON.stringify(currentUser));
-            }
-        } catch (error) {
-            console.error('Failed to save stats:', error);
-        }
     }
 }
 
@@ -494,13 +381,7 @@ function checkAnswer() {
     const userAnswer = answerInput.value.trim().toLowerCase();
     const correctAnswer = currentProblem.answer.toLowerCase();
     
-    stats.attempted++;
-    
     if (userAnswer === correctAnswer) {
-        stats.correct++;
-        stats.streak++;
-        stats.totalSolved++;
-        
         feedback.textContent = 'Correct! Well done! 🎉';
         feedback.className = 'feedback correct';
         
@@ -508,7 +389,6 @@ function checkAnswer() {
             generateProblem();
         }, 2000);
     } else {
-        stats.streak = 0;
         feedback.textContent = `Incorrect. The correct answer is: ${currentProblem.answer}`;
         feedback.className = 'feedback incorrect';
         
@@ -516,17 +396,8 @@ function checkAnswer() {
             generateProblem();
         }, 3000);
     }
-    
-    updateStatsDisplay();
-    saveUserStats();
-    checkAchievements();
 }
 
-function updateStatsDisplay() {
-    correctCount.textContent = stats.correct;
-    attemptedCount.textContent = stats.attempted;
-    streakCount.textContent = stats.streak;
-}
 
 // Profile
 function updateProfile() {
@@ -535,75 +406,4 @@ function updateProfile() {
     userName.textContent = currentUser.name;
     userEmail.textContent = currentUser.email;
     userGrade.textContent = `Grade: Year ${currentUser.grade}`;
-    
-    totalSolved.textContent = stats.totalSolved;
-    
-    const accuracy = stats.attempted > 0 ? Math.round((stats.correct / stats.attempted) * 100) : 0;
-    accuracyRate.textContent = `${accuracy}%`;
-    
-    currentStreak.textContent = stats.streak;
-    
-    updateAchievements();
-}
-
-function updateAchievements() {
-    const achievements = document.querySelectorAll('.achievement');
-    
-    if (stats.totalSolved >= 10) {
-        achievements[0].classList.remove('locked');
-        achievements[0].classList.add('unlocked');
-    }
-    
-    if (stats.totalSolved >= 50) {
-        achievements[1].classList.remove('locked');
-        achievements[1].classList.add('unlocked');
-    }
-    
-    if (stats.totalSolved >= 100) {
-        achievements[2].classList.remove('locked');
-        achievements[2].classList.add('unlocked');
-    }
-    
-    if (stats.streak >= 10) {
-        achievements[3].classList.remove('locked');
-        achievements[3].classList.add('unlocked');
-    }
-}
-
-function checkAchievements() {
-    if (stats.totalSolved === 10) {
-        showAchievementNotification('First Steps', 'Solved 10 problems!');
-    } else if (stats.totalSolved === 50) {
-        showAchievementNotification('Rising Star', 'Solved 50 problems!');
-    } else if (stats.totalSolved === 100) {
-        showAchievementNotification('Algebra Master', 'Solved 100 problems!');
-    } else if (stats.streak === 10) {
-        showAchievementNotification('On Fire', 'Got 10 in a row correct!');
-    }
-}
-
-function showAchievementNotification(title, description) {
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        z-index: 2000;
-        animation: slideIn 0.3s ease;
-    `;
-    notification.innerHTML = `
-        <div style="font-weight: 600; margin-bottom: 0.25rem;">🏆 ${title}</div>
-        <div style="font-size: 0.875rem;">${description}</div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
 }

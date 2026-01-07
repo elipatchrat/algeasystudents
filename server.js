@@ -21,13 +21,6 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     grade: { type: String, required: true },
-    stats: {
-        correct: { type: Number, default: 0 },
-        attempted: { type: Number, default: 0 },
-        streak: { type: Number, default: 0 },
-        totalSolved: { type: Number, default: 0 }
-    },
-    achievements: [{ type: String }],
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -76,13 +69,6 @@ app.post('/api/auth/signup', async (req, res) => {
             email,
             password: hashedPassword,
             grade,
-            stats: {
-                correct: 0,
-                attempted: 0,
-                streak: 0,
-                totalSolved: 0
-            },
-            achievements: []
         });
 
         await user.save();
@@ -101,9 +87,7 @@ app.post('/api/auth/signup', async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                grade: user.grade,
-                stats: user.stats,
-                achievements: user.achievements
+                grade: user.grade
             }
         });
     } catch (error) {
@@ -142,9 +126,7 @@ app.post('/api/auth/login', async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                grade: user.grade,
-                stats: user.stats,
-                achievements: user.achievements
+                grade: user.grade
             }
         });
     } catch (error) {
@@ -165,9 +147,7 @@ app.get('/api/user/profile', authenticateToken, async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                grade: user.grade,
-                stats: user.stats,
-                achievements: user.achievements
+                grade: user.grade
             }
         });
     } catch (error) {
@@ -175,32 +155,6 @@ app.get('/api/user/profile', authenticateToken, async (req, res) => {
     }
 });
 
-// Update user stats
-app.put('/api/user/stats', authenticateToken, async (req, res) => {
-    try {
-        const { stats } = req.body;
-        
-        const user = await User.findByIdAndUpdate(
-            req.user.userId,
-            { $set: { stats } },
-            { new: true }
-        ).select('-password');
-
-        res.json({
-            message: 'Stats updated successfully',
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                grade: user.grade,
-                stats: user.stats,
-                achievements: user.achievements
-            }
-        });
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
-});
 
 // Start server
 app.listen(PORT, () => {
