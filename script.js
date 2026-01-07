@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE = 'https://your-backend-url.com/api'; // Change this when backend is deployed
+const API_BASE = 'https://algeasy-backend.vercel.app/api';
 
 // App State
 let currentUser = null;
