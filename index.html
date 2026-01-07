@@ -3,37 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algeasy - Learn Algebra</title>
+    <title>Algeasy - Master Algebra</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div id="app">
         <!-- Navigation -->
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-logo">
-                    <h2>📐 Algeasy</h2>
+        <header class="header">
+            <div class="header-container">
+                <div class="logo">
+                    <i class="fas fa-square-root-alt"></i>
+                    <span>Algeasy</span>
                 </div>
-                <div class="nav-menu">
-                    <a href="#" id="homeLink" class="nav-link">Home</a>
+                <nav class="main-nav">
+                    <a href="#" id="homeLink" class="nav-link active">Home</a>
+                    <a href="#" id="topicsLink" class="nav-link">Topics</a>
                     <a href="#" id="practiceLink" class="nav-link">Practice</a>
-                    <a href="#" id="profileLink" class="nav-link hidden">Profile</a>
-                    <button id="loginBtn" class="btn btn-outline">Login</button>
-                    <button id="logoutBtn" class="btn btn-outline hidden">Logout</button>
-                </div>
+                    <div class="auth-buttons">
+                        <button id="loginBtn" class="btn btn-text">Sign In</button>
+                        <button id="signupBtn" class="btn btn-primary">Get Started</button>
+                        <button id="logoutBtn" class="btn btn-text hidden">Sign Out</button>
+                    </div>
+                </nav>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-        </nav>
+        </header>
 
         <!-- Main Content -->
         <main class="main-content">
             <!-- Landing Page -->
             <section id="landingPage" class="page active">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <div class="hero-content">
+                        <h1>Build Your Algebra Skills</h1>
+                        <p class="hero-subtitle">Master essential algebra concepts through personalized practice and clear explanations</p>
+                        <div class="hero-buttons">
+                            <button id="getStartedBtn" class="btn btn-primary btn-large">Start Learning</button>
+                            <button id="browseTopicsBtn" class="btn btn-outline btn-large">Browse Topics</button>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <img src="https://cdn.pixabay.com/photo/2017/08/02/14/26/winter-landscape-2571788_1280.jpg" alt="Math concepts">
+                    </div>
+                </section>
+
+                <!-- Features Section -->
+                <section class="features">
+                    <h2>Why Choose Algeasy?</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <h3>Structured Learning</h3>
+                            <p>Follow a clear path through algebra concepts from basic to advanced</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <h3>Targeted Practice</h3>
+                            <p>Practice problems tailored to your current understanding</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h3>Clear Explanations</h3>
+                            <p>Step-by-step solutions help you understand the 'why' behind each concept</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Topics Preview -->
+                <section class="topics-preview">
+                    <h2>Explore Topics</h2>
+                    <div class="topics-grid">
+                        <div class="topic-card">
+                            <h3>Linear Equations</h3>
+                            <p>Master the fundamentals of solving for x</p>
+                            <button class="btn btn-outline topic-btn">Start Learning</button>
+                        </div>
+                        <div class="topic-card">
+                            <h3>Quadratic Equations</h3>
+                            <p>Solve equations with squared terms</p>
+                            <button class="btn btn-outline topic-btn">Start Learning</button>
+                        </div>
+                        <div class="topic-card">
+                            <h3>Polynomials</h3>
+                            <p>Work with expressions of all degrees</p>
+                            <button class="btn btn-outline topic-btn">Start Learning</button>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Logged Out View -->
-                <div id="loggedOutView">
-                    <div class="hero">
-                        <h1>Master Algebra the Easy Way</h1>
-                        <p>Interactive algebra practice for Year 8-10 students</p>
+                <div id="loggedOutView" class="auth-section">
                         <div class="hero-buttons">
                             <button id="getStartedBtn" class="btn btn-primary">Get Started</button>
                             <button id="learnMoreBtn" class="btn btn-secondary">Learn More</button>
