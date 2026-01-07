@@ -1,0 +1,24 @@
+{
+  "name": "algeasy-students",
+  "version": "1.0.0",
+  "description": "Interactive algebra learning app for Year 8-10 students",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server --port=8000 --open=/index.html",
+    "dev": "live-server --port=8000 --open=/index.html",
+    "build": "echo 'No build step needed for static site'",
+    "deploy": "echo 'Use GitHub Pages for deployment'"
+  },
+  "keywords": [
+    "algebra",
+    "education",
+    "learning",
+    "math",
+    "students"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
