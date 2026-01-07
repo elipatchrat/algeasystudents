@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = 'https://your-backend-url.com/api'; // Change this when backend is deployed
 
 // App State
 let currentUser = null;
