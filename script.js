@@ -21,6 +21,19 @@ const pages = {
     profile: document.getElementById('profilePage')
 };
 
+// Dashboard Elements
+const loggedOutView = document.getElementById('loggedOutView');
+const loggedInView = document.getElementById('loggedInView');
+const dashboardUserName = document.getElementById('dashboardUserName');
+const dashboardTotalSolved = document.getElementById('dashboardTotalSolved');
+const dashboardAccuracy = document.getElementById('dashboardAccuracy');
+const dashboardStreak = document.getElementById('dashboardStreak');
+const dashboardPracticeBtn = document.getElementById('dashboardPracticeBtn');
+const dashboardProfileBtn = document.getElementById('dashboardProfileBtn');
+const dashboardMiniAchievements = document.getElementById('dashboardMiniAchievements');
+const dashboardAchievementsText = document.getElementById('dashboardAchievementsText');
+const recentActivity = document.getElementById('recentActivity');
+
 // Navigation Elements
 const homeLink = document.getElementById('homeLink');
 const practiceLink = document.getElementById('practiceLink');
@@ -118,6 +131,21 @@ function setupEventListeners() {
     document.getElementById('learnMoreBtn').addEventListener('click', () => {
         alert('Algeasy helps Year 8-10 students master algebra through interactive practice problems, progress tracking, and achievements. Sign up to get started!');
     });
+    
+    // Dashboard buttons
+    if (dashboardPracticeBtn) {
+        dashboardPracticeBtn.addEventListener('click', () => {
+            showPage('practice');
+            generateProblem();
+        });
+    }
+    
+    if (dashboardProfileBtn) {
+        dashboardProfileBtn.addEventListener('click', () => {
+            showPage('profile');
+            updateProfile();
+        });
+    }
 }
 
 // Page Navigation
@@ -134,10 +162,102 @@ function updateNavigation() {
         loginBtn.classList.add('hidden');
         logoutBtn.classList.remove('hidden');
         profileLink.classList.remove('hidden');
+        
+        // Show dashboard view, hide landing view
+        loggedOutView.classList.add('hidden');
+        loggedInView.classList.remove('hidden');
+        
+        // Update dashboard content
+        updateDashboard();
     } else {
         loginBtn.classList.remove('hidden');
         logoutBtn.classList.add('hidden');
         profileLink.classList.add('hidden');
+        
+        // Show landing view, hide dashboard view
+        loggedOutView.classList.remove('hidden');
+        loggedInView.classList.add('hidden');
+    }
+}
+
+function updateDashboard() {
+    if (!currentUser) return;
+    
+    // Update user info
+    dashboardUserName.textContent = currentUser.name;
+    
+    // Update stats
+    dashboardTotalSolved.textContent = stats.totalSolved;
+    const accuracy = stats.attempted > 0 ? Math.round((stats.correct / stats.attempted) * 100) : 0;
+    dashboardAccuracy.textContent = `${accuracy}%`;
+    dashboardStreak.textContent = stats.streak;
+    
+    // Update achievements
+    updateMiniAchievements();
+    
+    // Update recent activity
+    updateRecentActivity();
+}
+
+function updateMiniAchievements() {
+    dashboardMiniAchievements.innerHTML = '';
+    
+    const achievements = [
+        { icon: '🎯', name: 'First Steps', required: 10 },
+        { icon: '🌟', name: 'Rising Star', required: 50 },
+        { icon: '🏆', name: 'Algebra Master', required: 100 },
+        { icon: '🔥', name: 'On Fire', required: 10, isStreak: true }
+    ];
+    
+    achievements.forEach(achievement => {
+        const div = document.createElement('div');
+        div.className = 'mini-achievement';
+        div.title = achievement.name;
+        
+        let unlocked = false;
+        if (achievement.isStreak) {
+            unlocked = stats.streak >= achievement.required;
+        } else {
+            unlocked = stats.totalSolved >= achievement.required;
+        }
+        
+        if (unlocked) {
+            div.classList.add('unlocked');
+        }
+        
+        div.textContent = achievement.icon;
+        dashboardMiniAchievements.appendChild(div);
+    });
+    
+    // Update achievements text
+    const unlockedCount = achievements.filter(a => {
+        if (a.isStreak) return stats.streak >= a.required;
+        return stats.totalSolved >= a.required;
+    }).length;
+    
+    if (unlockedCount === 0) {
+        dashboardAchievementsText.textContent = 'Start solving problems to unlock achievements!';
+    } else if (unlockedCount < achievements.length) {
+        dashboardAchievementsText.textContent = `Great progress! ${unlockedCount}/${achievements.length} achievements unlocked.`;
+    } else {
+        dashboardAchievementsText.textContent = 'Amazing! All achievements unlocked! 🎉';
+    }
+}
+
+function updateRecentActivity() {
+    // This would normally fetch from backend, but for now show placeholder
+    if (stats.totalSolved === 0) {
+        recentActivity.innerHTML = '<p>No recent activity yet. Start practicing to see your progress!</p>';
+    } else {
+        const accuracy = stats.attempted > 0 ? Math.round((stats.correct / stats.attempted) * 100) : 0;
+        recentActivity.innerHTML = `
+            <div class="activity-item">
+                <strong>Today:</strong> Solved ${stats.totalSolved} problems with ${accuracy}% accuracy 🎯
+            </div>
+            <div class="activity-item">
+                <strong>Current Streak:</strong> ${stats.streak} problems in a row 🔥
+            </div>
+        `;
     }
 }
 

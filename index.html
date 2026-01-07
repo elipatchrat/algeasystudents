@@ -29,30 +29,86 @@
         <main class="main-content">
             <!-- Landing Page -->
             <section id="landingPage" class="page active">
-                <div class="hero">
-                    <h1>Master Algebra the Easy Way</h1>
-                    <p>Interactive algebra practice for Year 8-10 students</p>
-                    <div class="hero-buttons">
-                        <button id="getStartedBtn" class="btn btn-primary">Get Started</button>
-                        <button id="learnMoreBtn" class="btn btn-secondary">Learn More</button>
+                <!-- Logged Out View -->
+                <div id="loggedOutView">
+                    <div class="hero">
+                        <h1>Master Algebra the Easy Way</h1>
+                        <p>Interactive algebra practice for Year 8-10 students</p>
+                        <div class="hero-buttons">
+                            <button id="getStartedBtn" class="btn btn-primary">Get Started</button>
+                            <button id="learnMoreBtn" class="btn btn-secondary">Learn More</button>
+                        </div>
+                    </div>
+                    
+                    <div class="features">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h3>Targeted Practice</h3>
+                            <p>Problems designed specifically for Year 8-10 curriculum</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <h3>Track Progress</h3>
+                            <p>Monitor your improvement with detailed analytics</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🏆</div>
+                            <h3>Earn Rewards</h3>
+                            <p>Unlock achievements as you master concepts</p>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="features">
-                    <div class="feature-card">
-                        <div class="feature-icon">🎯</div>
-                        <h3>Targeted Practice</h3>
-                        <p>Problems designed specifically for Year 8-10 curriculum</p>
+
+                <!-- Logged In View (Dashboard) -->
+                <div id="loggedInView" class="hidden">
+                    <div class="dashboard-header">
+                        <h1>Welcome back, <span id="dashboardUserName">Student</span>! 👋</h1>
+                        <p>Ready to continue your algebra journey?</p>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📊</div>
-                        <h3>Track Progress</h3>
-                        <p>Monitor your improvement with detailed analytics</p>
+                    
+                    <div class="dashboard-stats">
+                        <div class="dashboard-stat-card">
+                            <div class="stat-icon">📚</div>
+                            <h3>Total Problems Solved</h3>
+                            <p id="dashboardTotalSolved">0</p>
+                        </div>
+                        <div class="dashboard-stat-card">
+                            <div class="stat-icon">🎯</div>
+                            <h3>Accuracy Rate</h3>
+                            <p id="dashboardAccuracy">0%</p>
+                        </div>
+                        <div class="dashboard-stat-card">
+                            <div class="stat-icon">🔥</div>
+                            <h3>Current Streak</h3>
+                            <p id="dashboardStreak">0</p>
+                        </div>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🏆</div>
-                        <h3>Earn Rewards</h3>
-                        <p>Unlock achievements as you master concepts</p>
+
+                    <div class="dashboard-actions">
+                        <div class="action-card">
+                            <h3>🎯 Continue Practice</h3>
+                            <p>Jump back into solving algebra problems</p>
+                            <button id="dashboardPracticeBtn" class="btn btn-primary">Continue Learning</button>
+                        </div>
+                        <div class="action-card">
+                            <h3>📊 View Progress</h3>
+                            <p>See detailed statistics and achievements</p>
+                            <button id="dashboardProfileBtn" class="btn btn-secondary">View Profile</button>
+                        </div>
+                        <div class="action-card">
+                            <h3>🏆 Achievements</h3>
+                            <p id="dashboardAchievementsText">Keep solving to unlock more!</p>
+                            <div class="mini-achievements" id="dashboardMiniAchievements">
+                                <!-- Mini achievement display -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list" id="recentActivity">
+                            <p>No recent activity yet. Start practicing to see your progress!</p>
+                        </div>
                     </div>
                 </div>
             </section>
